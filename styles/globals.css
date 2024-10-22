@@ -10,3 +10,13 @@ body {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
 }
+
+
+
+/**
+* Dark mode/light mode toggle
+*/
+body {
+	@apply transition-colors duration-300 !bg-white !text-normal-black;
+
+}

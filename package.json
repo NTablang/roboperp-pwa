@@ -9,13 +9,21 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@heroicons/react": "^2.1.5",
+		"chart.js": "^4.4.5",
+		"ethers": "^6.13.4",
+		"firebase": "^11.0.1",
+		"moment": "^2.30.1",
 		"next": "14.1.1",
 		"next-pwa": "^5.6.0",
 		"next-themes": "^0.2.1",
 		"react": "18.2.0",
-		"react-dom": "18.2.0"
+		"react-chartjs-2": "^5.2.0",
+		"react-dom": "18.2.0",
+		"swr": "^2.2.5"
 	},
 	"devDependencies": {
+		"@next/bundle-analyzer": "^15.0.0",
 		"@types/node": "^20.8.4",
 		"@types/react": "^18.2.28",
 		"autoprefixer": "^10.4.16",
@@ -27,7 +35,8 @@
 		"prettier-plugin-tailwindcss": "^0.5.5",
 		"tailwindcss": "^3.3.3",
 		"tailwindcss-safe-area": "^0.4.1",
-		"typescript": "^5.2.2"
+		"typescript": "^5.2.2",
+		"webpack-bundle-analyzer": "^4.10.2"
 	},
 	"prettier": {
 		"semi": false,

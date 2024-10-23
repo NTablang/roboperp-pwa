@@ -3,6 +3,9 @@ import { useRouter } from 'next/router'
 
 const BottomNav = () => {
 	const router = useRouter()
+	const isBottomNavVisible = false; // TODO: make this true once we have a real app with real catageories
+
+	if (!isBottomNavVisible) return null
 
 	return (
 		<div className='sm:hidden'>

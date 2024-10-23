@@ -11,12 +11,17 @@ body {
 	-webkit-touch-callout: none;
 }
 
-
-
 /**
 * Dark mode/light mode toggle
 */
 body {
 	@apply transition-colors duration-300 !bg-white !text-normal-black;
+}
 
+.trade-button {
+	border-radius: 68px;
+	background: linear-gradient(180deg, #717171 0%, #000 100%);
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
 }

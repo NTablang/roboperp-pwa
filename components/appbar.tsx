@@ -8,6 +8,9 @@ const links = [
 
 const Appbar = () => {
 	const router = useRouter()
+	const isAppBarVisible = false; // TODO: make this true once we have a real app with real catageories
+
+	if (!isAppBarVisible) return null
 
 	return (
 		<div className='fixed top-0 left-0 z-20 w-full bg-zinc-900 pt-safe'>

@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react'
 import clsx from 'clsx'
 import styles from './TradeButton.module.css'
+import ChartArrow from '@/public/chart-arrow.svg'
+import Image from 'next/image'
 
 const TradeButton: React.FC = () => {
 	const [isBlurred, setIsBlurred] = useState(false)
@@ -59,13 +61,15 @@ const TradeButton: React.FC = () => {
 							className={styles.actionButton}
 							onClick={handleBearishBullishClick}
 						>
-							Bearish
+							<div>Bearish</div>
+							<Image src={ChartArrow} alt="Bearish" className="transform rotate-[180deg] scale-x-[-1]"/>
 						</button>
 						<button
 							className={styles.actionButton}
 							onClick={handleBearishBullishClick}
 						>
-							Bullish
+							<div>Bullish</div>
+							<Image src={ChartArrow} alt="Bullish" />
 						</button>
 					</div>
 				)}

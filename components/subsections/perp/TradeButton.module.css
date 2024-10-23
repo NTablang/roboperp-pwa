@@ -79,6 +79,9 @@
     font-weight: 600;
     transition: all 0.2s ease;
     will-change: transform;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
 }
 
 .actionButton:hover {

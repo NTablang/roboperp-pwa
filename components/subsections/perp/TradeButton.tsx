@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ChartArrow from '@/public/chart-arrow.svg'
 import clsx from 'clsx'
@@ -36,6 +36,13 @@ const TradeButton: React.FC = () => {
 		vibrate([50, 20, 50]);
 	};
 
+	const mainButtonClass = useMemo(() =>
+		clsx(
+			'z-20 px-36 py-4 text-white rounded-full text-lg font-[600] transition-all duration-200 will-change-transform',
+			showButtons ? 'bg-white !text-black !border-black !border !px-[10rem]' : 'bg-gradient-to-b from-[#717171] to-black'
+		),
+	[showButtons]);
+
 	return (
 		<>
 			<AnimatePresence>
@@ -52,25 +59,25 @@ const TradeButton: React.FC = () => {
 
 			<div className='relative w-full h-full flex items-center justify-center'>
 				<motion.button
-					className={clsx(
-						'z-20 px-36 py-4 text-white rounded-full text-lg font-[600] transition-all duration-200',
-						showButtons
-							? 'bg-white !text-black !border-black !border'
-							: 'bg-gradient-to-b from-[#717171] to-black',
-					)}
+					className={mainButtonClass}
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
 					onClick={handleMainButtonClick}
-					initial={false}
+					layout
 				>
-					<AnimatePresence mode="wait">
+					<AnimatePresence mode="popLayout">
 						{showButtons ? (
 							<motion.span
 								key="close"
-								initial={{ rotate: -90 }}
-								animate={{ rotate: 0 }}
-								exit={{ rotate: 90 }}
-								transition={{ duration: 0.2 }}
+								initial={{ opacity: 0, rotate: -90 }}
+								animate={{ opacity: 1, rotate: 0 }}
+								exit={{ opacity: 0, rotate: 90 }}
+								transition={{
+									type: "spring",
+									stiffness: 300,
+									damping: 15,
+									opacity: { duration: 0.1 }
+								}}
 							>
 								✕
 							</motion.span>
@@ -80,6 +87,7 @@ const TradeButton: React.FC = () => {
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
+								transition={{ duration: 0.1 }} // Faster opacity transition
 							>
 								Trade
 							</motion.span>
@@ -94,21 +102,23 @@ const TradeButton: React.FC = () => {
 							initial={{ opacity: 0, y: 50 }}
 							animate={{ opacity: 1, y: -75 }}
 							exit={{ opacity: 0, y: 50 }}
-							transition={{ duration: 0.25 }}
+							transition={{ type: "spring", stiffness: 300, damping: 30 }}
 						>
 							<motion.button
-								className='px-20 py-4 bg-black text-white rounded-full text-lg font-semibold'
+								className='px-20 py-4 bg-black text-white rounded-full text-lg font-semibold will-change-transform'
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}
 								onClick={handleBearishBullishClick}
+								layout
 							>
 								Bearish
 							</motion.button>
 							<motion.button
-								className='px-20 py-4 bg-black text-white rounded-full text-lg font-semibold'
+								className='px-20 py-4 bg-black text-white rounded-full text-lg font-semibold will-change-transform'
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}
 								onClick={handleBearishBullishClick}
+								layout
 							>
 								Bullish
 							</motion.button>

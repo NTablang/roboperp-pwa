@@ -7,6 +7,7 @@ import Image from 'next/image'
 const TradeButton: React.FC = () => {
 	const [isBlurred, setIsBlurred] = useState(false)
 	const [showButtons, setShowButtons] = useState(false)
+	const [isClosing, setIsClosing] = useState(false)
 
 	const vibrate = useCallback((pattern: number | number[]) => {
 		if (navigator.vibrate) {
@@ -25,8 +26,12 @@ const TradeButton: React.FC = () => {
 	}, [showButtons, vibrate]);
 
 	const handleClose = useCallback(() => {
-		setShowButtons(false)
-		setIsBlurred(false)
+		setIsClosing(true)
+		setTimeout(() => {
+			setShowButtons(false)
+			setIsBlurred(false)
+			setIsClosing(false)
+		}, 250) // Match this with the animation duration
 	}, []);
 
 	const handleBearishBullishClick = useCallback(() => {
@@ -55,8 +60,11 @@ const TradeButton: React.FC = () => {
 					</span>
 				</button>
 
-				{showButtons && (
-					<div className={styles.buttonContainer}>
+				{(showButtons || isClosing) && (
+					<div className={clsx(
+						styles.buttonContainer,
+						isClosing && styles.buttonContainerClosing
+					)}>
 						<button
 							className={styles.actionButton}
 							onClick={handleBearishBullishClick}

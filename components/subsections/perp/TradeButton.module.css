@@ -70,6 +70,10 @@
     animation: slideUp 0.25s ease-out forwards;
 }
 
+.buttonContainerClosing {
+    animation: slideDown 0.25s ease-out forwards;
+}
+
 .actionButton {
     padding: 1rem 5rem;
     background-color: black;
@@ -105,4 +109,9 @@
 @keyframes slideUp {
     from { transform: translateY(50px); opacity: 0; }
     to { transform: translateY(-100px); opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100px); opacity: 1; }
+    to { transform: translateY(50px); opacity: 0; }
 }

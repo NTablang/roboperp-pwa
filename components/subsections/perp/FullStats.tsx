@@ -57,10 +57,7 @@ function FullStats({ data, openInterest }: FullStatsProps) {
 					<div>Mark Price</div>
 					<div className='text-right'>{formatDollar(data.markPrice)}</div>
 				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Contract Address</div>
-					<div className='text-right text-xs'>{data.perpSmartContractAddress}</div>
-				</div>
+
 				<div className='flex justify-between py-2 border-b'>
 					<div>Cumulative Funding</div>
 					<div className='text-right'>

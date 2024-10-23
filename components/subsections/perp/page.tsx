@@ -41,127 +41,182 @@ function InDepthPerpSection({ address }: { address: string }) {
 		short: number
 	} | null>(null)
 	const [openInterestChartData, setOpenInterestChartData] = useState<any>(null)
+	const [availableRanges, setAvailableRanges] = useState<TimeRange[]>([]);
 
 	useEffect(() => {
-		if (marketUpdateData && marketUpdateData.length > 1) {
-			const now = moment()
-			const filteredData = marketUpdateData.filter((update: any) => {
-				const updateTime = moment.unix(parseInt(update.mockedTimestamp))
-				switch (selectedTimeRange) {
+		console.log('useEffect triggered');
+		console.log('marketUpdateData:', marketUpdateData);
+		console.log('selectedTimeRange:', selectedTimeRange);
+
+		if (!marketUpdateData || marketUpdateData.length <= 1) {
+			setSelectedTimeRange('1D')
+			console.log('marketUpdateData is not ready yet');
+			setAvailableRanges([]);
+			setChartData(null);
+			setOpenInterestChartData(null);
+			return;
+		}
+
+		const now = moment();
+		const ranges: TimeRange[] = [];
+
+		const hasDataForRange = (range: TimeRange) => {
+			return marketUpdateData.some((update: any) => {
+				const updateTime = moment.unix(parseInt(update.mockedTimestamp));
+				switch (range) {
 					case '1H':
-						return now.diff(updateTime, 'hours') <= 1
+						return now.diff(updateTime, 'hours') <= 1;
 					case '1D':
-						return now.diff(updateTime, 'days') <= 1
+						return now.diff(updateTime, 'days') <= 1;
 					case '1W':
-						return now.diff(updateTime, 'weeks') <= 1
+						return now.diff(updateTime, 'weeks') <= 1;
 					case '∞':
-						return true
+						return true;
 				}
-			})
+			});
+		};
 
-			if (filteredData.length < 2) return
-
-			const latestUpdate = filteredData[0]
-			const earliestUpdate = filteredData[filteredData.length - 1]
-
-			const currentMarkPrice =
-				parseFloat(latestUpdate.markPrice) / Math.pow(10, 6)
-			const previousMarkPrice =
-				parseFloat(earliestUpdate.markPrice) / Math.pow(10, 6)
-			const currentFundingRate =
-				parseFloat(latestUpdate.fundingRate) / (Math.pow(10, 18) * 3600)
-			const previousFundingRate =
-				parseFloat(earliestUpdate.fundingRate) / (Math.pow(10, 18) * 3600)
-			const currentOpenInterest =
-				parseFloat(latestUpdate.totalOI) / Math.pow(10, 18)
-			const previousOpenInterest =
-				parseFloat(earliestUpdate.totalOI) / Math.pow(10, 18)
-
-			setDelta({
-				markPrice: currentMarkPrice - previousMarkPrice,
-				fundingRate: currentFundingRate - previousFundingRate,
-				openInterest: currentOpenInterest - previousOpenInterest,
-				lastUpdateTime: moment.unix(parseInt(latestUpdate.mockedTimestamp)),
-			})
-
-			setChartData({
-				labels: filteredData
-					.map((update: any) =>
-						moment.unix(parseInt(update.mockedTimestamp)).format('MM/DD HH:mm'),
-					)
-					.reverse(),
-				datasets: [
-					{
-						label: 'Mark Price',
-						data: filteredData
-							.map(
-								(update: any) => parseFloat(update.markPrice) / Math.pow(10, 6),
-							)
-							.reverse(),
-						borderColor: '#F8A700',
-						borderWidth: 2,
-						pointRadius: 0, // Remove points
-						tension: 0, // Add some curve to the line
-					},
-				],
-			})
-
-			if (filteredData.length > 0) {
-				const totalOI = parseFloat(latestUpdate.totalOI)
-				const netOI = parseFloat(latestUpdate.netOI) / Math.pow(10, 18)
-
-				const longOI = (totalOI + netOI) / 2
-				const shortOI = (totalOI - netOI) / 2
-
-
-				setOpenInterest({
-					long: longOI,
-					short: shortOI,
-				})
+		(['1H', '1D', '1W', '∞'] as TimeRange[]).forEach((range) => {
+			if (hasDataForRange(range)) {
+				ranges.push(range);
 			}
+		});
 
-			const labels = filteredData.map((update: any) =>
-				moment.unix(parseInt(update.mockedTimestamp)).format('MM/DD HH:mm'),
-			)
+		setAvailableRanges(ranges);
 
-			const shortOIData = filteredData.map((update: any) => {
-				const totalOI = parseFloat(update.totalOI) / Math.pow(10, 18)
-				const netOI = parseFloat(update.netOI) / Math.pow(10, 18)
-				return (totalOI - netOI) / 2
-			})
+		const filteredData = marketUpdateData.filter((update: any) => {
+			const updateTime = moment.unix(parseInt(update.mockedTimestamp));
+			switch (selectedTimeRange) {
+				case '1H':
+					return now.diff(updateTime, 'hours') <= 1;
+				case '1D':
+					return now.diff(updateTime, 'days') <= 1;
+				case '1W':
+					return now.diff(updateTime, 'weeks') <= 1;
+				case '∞':
+					return true;
+			}
+		});
 
-			const longOIData = filteredData.map((update: any) => {
-				const totalOI = parseFloat(update.totalOI) / Math.pow(10, 18)
-				const netOI = parseFloat(update.netOI) / Math.pow(10, 18)
-				return (totalOI + netOI) / 2
-			})
+		if (filteredData.length < 2) {
+			console.log('Not enough data for the selected time range');
+			return;
+		}
 
-			setOpenInterestChartData({
-				labels,
-				datasets: [
-					{
-						label: 'Short Open Interest',
-						data: shortOIData,
-						backgroundColor: 'rgba(255, 99, 132, 0.8)',
-					},
-					{
-						label: 'Long Open Interest',
-						data: longOIData,
-						backgroundColor: 'rgba(255, 206, 86, 0.8)',
-					},
-				],
+		const latestUpdate = filteredData[0]
+		const earliestUpdate = filteredData[filteredData.length - 1]
+
+		const currentMarkPrice =
+			parseFloat(latestUpdate.markPrice) / Math.pow(10, 6)
+		const previousMarkPrice =
+			parseFloat(earliestUpdate.markPrice) / Math.pow(10, 6)
+		const currentFundingRate =
+			parseFloat(latestUpdate.fundingRate) / (Math.pow(10, 18) * 3600)
+		const previousFundingRate =
+			parseFloat(earliestUpdate.fundingRate) / (Math.pow(10, 18) * 3600)
+		const currentOpenInterest =
+			parseFloat(latestUpdate.totalOI) / Math.pow(10, 18)
+		const previousOpenInterest =
+			parseFloat(earliestUpdate.totalOI) / Math.pow(10, 18)
+
+		setDelta({
+			markPrice: currentMarkPrice - previousMarkPrice,
+			fundingRate: currentFundingRate - previousFundingRate,
+			openInterest: currentOpenInterest - previousOpenInterest,
+			lastUpdateTime: moment.unix(parseInt(latestUpdate.mockedTimestamp)),
+		})
+		console.log(filteredData)
+
+		setChartData({
+			labels: filteredData
+				.map((update: any) =>
+					moment.unix(parseInt(update.mockedTimestamp)).format('MM/DD HH:mm'),
+				)
+				.reverse(),
+			datasets: [
+				{
+					label: 'Mark Price',
+					data: filteredData
+						.map(
+							(update: any) => parseFloat(update.markPrice) / Math.pow(10, 6),
+						)
+						.reverse(),
+					borderColor: '#F8A700',
+					borderWidth: 2,
+					pointRadius: 0, // Remove points
+					tension: 0, // Add some curve to the line
+				},
+			],
+		})
+
+		if (filteredData.length > 0) {
+			const totalOI = parseFloat(latestUpdate.totalOI)
+			const netOI = parseFloat(latestUpdate.netOI) / Math.pow(10, 18)
+
+			const longOI = (totalOI + netOI) / 2
+			const shortOI = (totalOI - netOI) / 2
+
+
+			setOpenInterest({
+				long: longOI,
+				short: shortOI,
 			})
 		}
+
+		const labels = filteredData.map((update: any) =>
+			moment.unix(parseInt(update.mockedTimestamp)).format('MM/DD HH:mm'),
+		)
+
+		const shortOIData = filteredData.map((update: any) => {
+			const totalOI = parseFloat(update.totalOI) / Math.pow(10, 18)
+			const netOI = parseFloat(update.netOI) / Math.pow(10, 18)
+			return (totalOI - netOI) / 2
+		})
+
+		const longOIData = filteredData.map((update: any) => {
+			const totalOI = parseFloat(update.totalOI) / Math.pow(10, 18)
+			const netOI = parseFloat(update.netOI) / Math.pow(10, 18)
+			return (totalOI + netOI) / 2
+		})
+
+		setOpenInterestChartData({
+			labels,
+			datasets: [
+				{
+					label: 'Short Open Interest',
+					data: shortOIData,
+					backgroundColor: 'rgba(255, 99, 132, 0.8)',
+				},
+				{
+					label: 'Long Open Interest',
+					data: longOIData,
+					backgroundColor: 'rgba(255, 206, 86, 0.8)',
+				},
+			],
+		})
+
+		console.log('chartData set:', chartData);
+		console.log('openInterestChartData set:', openInterestChartData);
 	}, [marketUpdateData, selectedTimeRange])
 
 	const handleTimeRangeChange = (range: TimeRange) => {
-		setSelectedTimeRange(range)
+		setSelectedTimeRange(range);
+		setChartData(null);
+		setOpenInterestChartData(null);
 	}
 
-	if (isLoadingSimplePerp || isLoadingMarketUpdates)
-		return <div>Loading...</div>
-	if (isErrorSimplePerp || isErrorMarketUpdates)
-		return <div>Error loading data</div>
+	if (isLoadingSimplePerp || isLoadingMarketUpdates) {
+		console.log('Loading data...');
+		return <div>Loading...</div>;
+	}
+	if (isErrorSimplePerp || isErrorMarketUpdates) {
+		console.error('Error loading data:', isErrorSimplePerp || isErrorMarketUpdates);
+		return <div>Error loading data
+			<PrettyDump data={isErrorSimplePerp || isErrorMarketUpdates} />
+		</div>;
+	}
+
+	console.log('Rendering InDepthPerpSection with data');
 
 	return (
 		<div>
@@ -188,11 +243,12 @@ function InDepthPerpSection({ address }: { address: string }) {
 				marketUpdateData={marketUpdateData}
 			/>
 
-			<PriceChart chartData={chartData} />
+			{chartData && <PriceChart chartData={chartData} />}
 
 			<TimeRangeSelector
 				selectedTimeRange={selectedTimeRange}
 				onTimeRangeChange={handleTimeRangeChange}
+				availableRanges={availableRanges}
 			/>
 
 			<DataVerifiabilityInfo />

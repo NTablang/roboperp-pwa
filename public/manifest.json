@@ -19,7 +19,7 @@
 	"orientation": "portrait",
 	"display": "standalone",
 	"scope": "/",
-	"background_color": "transparent",
-	"theme_color": "transparent",
+	"background_color": "white",
+	"theme_color": "white",
 	"splash_pages": null
 }

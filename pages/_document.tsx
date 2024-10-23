@@ -15,7 +15,7 @@ export default function Document() {
 					content='#18181b'
 					media='(prefers-color-scheme: dark)'
 				/>
-				<meta name='theme-color' content='transparent' />
+				<meta name='theme-color' content='white' />
 				<link rel='apple-touch-icon' href='/images/icon-maskable-512.png' />
 				<link rel='manifest' href='/manifest.json' />
 			</Head>

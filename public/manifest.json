@@ -1,7 +1,7 @@
 {
-	"name": "Rice Bowl",
-	"short_name": "Rice Bowl",
-	"description": "Fluffless jasmine rice for those cold winter nights",
+	"name": "Roboperp",
+	"short_name": "Roboperp",
+	"description": "The time for the zero knowledge revolution is now",
 	"icons": [
 		{
 			"src": "/images/icon-192.png",
@@ -18,5 +18,8 @@
 	"start_url": "/?source=pwa",
 	"orientation": "portrait",
 	"display": "standalone",
-	"scope": "/"
+	"scope": "/",
+	"background_color": "transparent",
+	"theme_color": "transparent",
+	"splash_pages": null
 }

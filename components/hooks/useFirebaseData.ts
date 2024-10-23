@@ -216,12 +216,15 @@ export function useSimplePerp(address: string) {
 	}
 }
 
+// Helper function to sort by mockedTimestamp in descending order (most recent first)
+const sortByTimestampDesc = <T extends { mockedTimestamp: string }>(a: T, b: T) =>
+  parseInt(b.mockedTimestamp) - parseInt(a.mockedTimestamp);
+
 // Hook for fetching MarketUpdate data
 export function useMarketUpdates(simplePerpAddress: string) {
 	const { data, error, mutate } = useSWR<MarketUpdate[]>(
 		`marketUpdates/${simplePerpAddress}`,
 		() => {
-			console.log('Fetching market updates for:', simplePerpAddress)
 			return new Promise((resolve, reject) => {
 				const q = query(
 					collection(db, 'MarketUpdate'),
@@ -234,11 +237,7 @@ export function useMarketUpdates(simplePerpAddress: string) {
 						const updates = querySnapshot.docs.map(
 							(doc) => ({ id: doc.id, ...doc.data() }) as MarketUpdate,
 						)
-						console.log('Fetched market updates:', updates.length)
-						updates.sort(
-							(a, b) =>
-								parseInt(b.mockedTimestamp) - parseInt(a.mockedTimestamp),
-						)
+						updates.sort(sortByTimestampDesc)
 						resolve(updates)
 					},
 					(err) => {
@@ -286,6 +285,7 @@ export function usePositions(simplePerpAddress: string) {
 							const positions = querySnapshot.docs.map(
 								(doc) => ({ id: doc.id, ...doc.data() }) as Position,
 							)
+							positions.sort(sortByTimestampDesc)
 							resolve(positions)
 						},
 						(err) => reject(err),

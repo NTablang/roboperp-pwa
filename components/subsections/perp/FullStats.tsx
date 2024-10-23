@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import { SimplePerpWithDelta } from '@/components/hooks/useFirebaseData'
+import { formatEther } from 'ethers'
 
 interface FullStatsProps {
 	data: SimplePerpWithDelta
@@ -30,58 +31,66 @@ function FullStats({ data, openInterest }: FullStatsProps) {
 		<div className='mt-8 w-full'>
 			<h2 className='text-2xl font-bold mb-4'>Full Stats</h2>
 
-			<div className='w-full flex flex-col'>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Mark Price</div>
-					<div className='text-right'>
-						${formatNumber((Number(data.markPrice) / Math.pow(10, 6)).toString(), 6)}
-					</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Funding Rate</div>
-					<div className='text-right'>{formatPercentage(data.fundingRate)}</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Ticker</div>
-					<div className='text-right'>{data.metadata.ticker}</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Title</div>
-					<div className='text-right'>{data.metadata.title}</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Description</div>
-					<div className='text-right text-xs'>{data.metadata.description}</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Mark Price</div>
-					<div className='text-right'>{formatDollar(data.markPrice)}</div>
-				</div>
+			<div className='w-full flex flex-col tracking-tight'>
+				<StatRow
+					label="Mark Price"
+					value={`$${formatNumber((Number(data.markPrice) / Math.pow(10, 6)).toString(), 6)}`}
+				/>
+				<StatRow
+					label="Funding Rate"
+					value={formatEther(data.fundingRate)}
+				/>
+				<StatRow
+					label="Ticker"
+					value={data.metadata.ticker}
+				/>
+				<StatRow
+					label="Title"
+					value={data.metadata.title}
+				/>
+				<StatRow
+					label="Description"
+					value={data.metadata.description}
+					valueClassName="text-xs"
+				/>
+				<StatRow
+					label="Cumulative Funding"
+					value={`$${formatNumber((Number(data.markPrice) / Math.pow(10, 6)).toString(), 6)}`}
+				/>
+				<StatRow
+					label="Total Open Interest"
+					value={data.totalOpenInterest}
+				/>
+				<StatRow
+					label="Total Positions"
+					value={formatNumber(data.totalPositions, 0) || '0'}
+				/>
+				<StatRow
+					label="Last Funding Update"
+					value={(moment.unix(parseInt(data.lastFundingUpdate)).fromNow())}
+				/>
 
-				<div className='flex justify-between py-2 border-b'>
-					<div>Cumulative Funding</div>
-					<div className='text-right'>
-						${formatNumber((Number(data.markPrice) / Math.pow(10, 6)).toString(), 6)}
-					</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Total Open Interest</div>
-					<div className='text-right'>{data.totalOpenInterest}</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Total Positions</div>
-					<div className='text-right'>{data.totalPositions}</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Last Funding Update</div>
-					<div className='text-right'>
-						{moment(parseInt(data.lastFundingUpdate)).fromNow()}
-					</div>
-				</div>
-				<div className='flex justify-between py-2 border-b'>
-					<div>Net Open Interest</div>
-					<div className='text-right'>{data.netOpenInterest}</div>
-				</div>
+				<StatRow
+					label="Net Open Interest"
+					value={data.netOpenInterest}
+				/>
+			</div>
+		</div>
+	)
+}
+
+interface StatRowProps {
+	label: string
+	value: string | number
+	valueClassName?: string
+}
+
+function StatRow({ label, value, valueClassName = '' }: StatRowProps) {
+	return (
+		<div className='flex justify-between py-2 border-b border-black'>
+			<div className='font-[400] text-normal-black text-opacity-[75%] '>{label}</div>
+			<div className={`text-right font-[600] text-normal-black  ${valueClassName}`}>
+				{value}
 			</div>
 		</div>
 	)

@@ -4,12 +4,14 @@ import styles from './TradeButton.module.css'
 import ChartArrow from '@/public/chart-arrow.svg'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { useNavigation } from '@/components/NavigationContext'
 
 const TradeButton: React.FC<{ address: string }> = ({ address }) => {
 	const router = useRouter()
 	const [isBlurred, setIsBlurred] = useState(false)
 	const [showButtons, setShowButtons] = useState(false)
 	const [isClosing, setIsClosing] = useState(false)
+	const {  triggerTransition } = useNavigation()
 
 	const vibrate = useCallback((pattern: number | number[]) => {
 		if (navigator.vibrate) {
@@ -38,10 +40,8 @@ const TradeButton: React.FC<{ address: string }> = ({ address }) => {
 
 	const handleBearishBullishClick = useCallback((direction: 'bearish' | 'bullish') => {
 		vibrate([50, 20, 50]);
-
-		// add bearish/bullish as part of param on router
-		router.push(`/trade/${address}?direction=${direction}`);
-	}, [vibrate, router, address]);
+		triggerTransition(`/trade/${address}?direction=${direction}`);
+	}, [vibrate, triggerTransition, address]);
 
 	return (
 		<>

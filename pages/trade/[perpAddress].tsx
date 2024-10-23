@@ -6,10 +6,13 @@ import ChartArrow from '@/public/chart-arrow.svg'
 import Image from 'next/image'
 import PencilIcon from '@/public/pencil.svg'
 import clsx from 'clsx'
+import PageWrapper from '@/components/PageWrapper'
+import { useNavigation } from '@/components/NavigationContext'
 
 function TradePage() {
 	const router = useRouter()
 	const { perpAddress, direction } = router.query
+	const { triggerTransition } = useNavigation()
 
 	const [tradeDetails, setTradeDetails] = useState({
 		amount: '1',
@@ -18,7 +21,7 @@ function TradePage() {
 	})
 
 	const handleBack = () => {
-		router.back()
+		triggerTransition('/')
 	}
 
 	const handleSubmit = () => {
@@ -31,101 +34,103 @@ function TradePage() {
 	}
 
 	return (
-		<Page>
-			<div className="flex flex-col min-h-screen">
-				<Section>
-					<div className='flex items-center justify-between'>
-						<button onClick={handleBack}>
-							<svg
-								xmlns='http://www.w3.org/2000/svg'
-								fill='none'
-								viewBox='0 0 24 24'
-								strokeWidth='2'
-								stroke='#9B9B9B'
-								className='size-6'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									d='M15.75 19.5 8.25 12l7.5-7.5'
+		<PageWrapper>
+			<Page>
+				<div className="flex flex-col min-h-screen">
+					<Section>
+						<div className='flex items-center justify-between'>
+							<button onClick={handleBack}>
+								<svg
+									xmlns='http://www.w3.org/2000/svg'
+									fill='none'
+									viewBox='0 0 24 24'
+									strokeWidth='2'
+									stroke='#9B9B9B'
+									className='size-6'
+								>
+									<path
+										strokeLinecap='round'
+										strokeLinejoin='round'
+										d='M15.75 19.5 8.25 12l7.5-7.5'
+									/>
+								</svg>
+							</button>
+							<div className='flex items-center justify-center w-full '>
+								<div className='flex items-center gap-2'>
+									<div className='font-[600] tracking-[-0.02em] text-black'>
+										{direction === 'bearish' ? 'Bearish' : 'Bullish'}
+									</div>
+									<Image
+										src={ChartArrow}
+										alt='Bearish'
+										className={clsx(
+											direction === 'bearish' ? 'transform rotate-[180deg] scale-x-[-1] invert' : 'rotate-[0deg] invert'
+										)}
+										width={16}
+										height={16}
+									/>
+								</div>
+							</div>
+						</div>
+						<div className='flex flex-col justify-center w-full mt-8 gap-2'>
+							<div className='text-2xl font-[500] tracking-[-0.02em] text-normal-black'>
+								The Dreamer
+							</div>
+							<div className='text-sm font-[300] tracking-[-0.02em] text-normal-black pr-20'>
+								This high risk, high reward has suggested a following markup profile
+							</div>
+							<div className='flex flex-col gap-2 justify-center px-3 py-3 border-opacity-5 border border-black bg-[#F5F5F5] rounded-2xl mt-4'>
+								<EditableStatRow
+									label='Amount'
+									value={tradeDetails.amount}
+									onSave={(value) => handleTradeDetailUpdate('amount', value)}
 								/>
-							</svg>
+								<EditableStatRow
+									label='Leverage'
+									value={tradeDetails.leverage}
+									onSave={(value) => handleTradeDetailUpdate('leverage', value)}
+								/>
+								<EditableStatRow
+									label='Collateral'
+									value={tradeDetails.collateral}
+									includeBorder={false}
+									onSave={(value) => handleTradeDetailUpdate('collateral', value)}
+								/>
+								<div className='flex justify-between bg-white rounded-lg p-4 mt-2'>
+									<div className='text-base font-[400] tracking-[-0.02em] text-normal-black text-opacity-[75%]'>
+										Total
+									</div>
+									<div className='text-base font-[700] tracking-[-0.02em] text-normal-black'>
+										$46.95
+									</div>
+								</div>
+								<div className='text-right text-sm text-normal-black opacity-[45%] tracking-tight'>
+									$0.20 trading fee
+								</div>
+							</div>
+						</div>
+					</Section>
+					<div className="px-8 py-6 bg-white fixed bottom-3 w-full left-0">
+						<button
+							onClick={handleSubmit}
+							className={clsx(
+								'w-full bg-black text-white py-4 rounded-full font-semibold text-lg',
+								'transition-all duration-200 ease-in-out',
+								'hover:bg-gray-800 active:bg-gray-700 active:scale-95',
+								'focus:outline-none',
+								'touch-action-manipulation',
+								'[&_*]:pointer-events-none'
+							)}
+							style={{
+								WebkitTapHighlightColor: 'transparent',
+							}}
+						>
+							Submit
 						</button>
-						<div className='flex items-center justify-center w-full '>
-							<div className='flex items-center gap-2'>
-								<div className='font-[600] tracking-[-0.02em] text-black'>
-									{direction === 'bearish' ? 'Bearish' : 'Bullish'}
-								</div>
-								<Image
-									src={ChartArrow}
-									alt='Bearish'
-									className={clsx(
-										direction === 'bearish' ? 'transform rotate-[180deg] scale-x-[-1] invert' : 'rotate-[0deg] invert'
-									)}
-									width={16}
-									height={16}
-								/>
-							</div>
-						</div>
 					</div>
-					<div className='flex flex-col justify-center w-full mt-8 gap-2'>
-						<div className='text-2xl font-[500] tracking-[-0.02em] text-normal-black'>
-							The Dreamer
-						</div>
-						<div className='text-sm font-[300] tracking-[-0.02em] text-normal-black pr-20'>
-							This high risk, high reward has suggested a following markup profile
-						</div>
-						<div className='flex flex-col gap-2 justify-center px-3 py-3 border-opacity-5 border border-black bg-[#F5F5F5] rounded-2xl mt-4'>
-							<EditableStatRow
-								label='Amount'
-								value={tradeDetails.amount}
-								onSave={(value) => handleTradeDetailUpdate('amount', value)}
-							/>
-							<EditableStatRow
-								label='Leverage'
-								value={tradeDetails.leverage}
-								onSave={(value) => handleTradeDetailUpdate('leverage', value)}
-							/>
-							<EditableStatRow
-								label='Collateral'
-								value={tradeDetails.collateral}
-								includeBorder={false}
-								onSave={(value) => handleTradeDetailUpdate('collateral', value)}
-							/>
-							<div className='flex justify-between bg-white rounded-lg p-4 mt-2'>
-								<div className='text-base font-[400] tracking-[-0.02em] text-normal-black text-opacity-[75%]'>
-									Total
-								</div>
-								<div className='text-base font-[700] tracking-[-0.02em] text-normal-black'>
-									$46.95
-								</div>
-							</div>
-							<div className='text-right text-sm text-normal-black opacity-[45%] tracking-tight'>
-								$0.20 trading fee
-							</div>
-						</div>
-					</div>
-				</Section>
-				<div className="px-8 py-6 bg-white fixed bottom-3 w-full left-0">
-					<button
-						onClick={handleSubmit}
-						className={clsx(
-							'w-full bg-black text-white py-4 rounded-full font-semibold text-lg',
-							'transition-all duration-200 ease-in-out',
-							'hover:bg-gray-800 active:bg-gray-700 active:scale-95',
-							'focus:outline-none',
-							'touch-action-manipulation',
-							'[&_*]:pointer-events-none'
-						)}
-						style={{
-							WebkitTapHighlightColor: 'transparent',
-						}}
-					>
-						Submit
-					</button>
 				</div>
-			</div>
-		</Page>
+			</Page>
+		</PageWrapper>
 	)
 }
 

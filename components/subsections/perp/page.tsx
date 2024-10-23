@@ -14,6 +14,7 @@ import DataVerifiabilityInfo from './DataVerifiabilityInfo'
 import MarketSentiment from './MarketSentiment'
 import { parseEther, formatEther } from 'ethers'
 import SplashScreen from '@/components/SplashScreen'
+import { useSplashScreen } from '@/hooks/useSplashScreen'
 
 export type TimeRange = '1H' | '1D' | '1W' | '∞'
 
@@ -44,6 +45,7 @@ function InDepthPerpSection({ address }: { address: string }) {
 	const [openInterestChartData, setOpenInterestChartData] = useState<any>(null)
 	const [availableRanges, setAvailableRanges] = useState<TimeRange[]>([])
 	const [isLoading, setIsLoading] = useState(true)
+	const showSplash = useSplashScreen()
 
 	useEffect(() => {
 		if (!marketUpdateData || marketUpdateData.length <= 1) {
@@ -239,7 +241,7 @@ function InDepthPerpSection({ address }: { address: string }) {
 		setOpenInterestChartData(null)
 	}
 
-	if (isLoading) {
+	if (showSplash) {
 		return <SplashScreen />
 	}
 	if (isLoadingSimplePerp || isLoadingMarketUpdates) {

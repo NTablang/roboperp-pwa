@@ -8,22 +8,33 @@ const TradeButton: React.FC = () => {
 	const [isBlurred, setIsBlurred] = useState(false)
 	const [showButtons, setShowButtons] = useState(false)
 
+	const vibrate = (pattern: number | number[]) => {
+		if (navigator.vibrate) {
+			navigator.vibrate(pattern);
+		}
+	};
+
 	const handleMainButtonClick = () => {
 		if (showButtons) {
 			// If buttons are shown, clicking will close them
 			handleClose()
 		} else {
-			// If buttons are not shown, clicking will show them
+			// Loud haptic feedback
+			vibrate([100, 30, 100, 30, 100]);
 			setIsBlurred(true)
 			setShowButtons(true)
-			//      setTimeout(() => setShowButtons(true), 250);
 		}
-	}
+	};
 
 	const handleClose = () => {
 		setShowButtons(false)
 		setIsBlurred(false)
-	}
+	};
+
+	const handleBearishBullishClick = () => {
+		// Semi-loud haptic feedback
+		vibrate([50, 20, 50]);
+	};
 
 	return (
 		<>
@@ -52,7 +63,28 @@ const TradeButton: React.FC = () => {
 					onClick={handleMainButtonClick}
 					initial={false}
 				>
-					{showButtons ? '✕' : 'Trade'}
+					<AnimatePresence mode="wait">
+						{showButtons ? (
+							<motion.span
+								key="close"
+								initial={{ rotate: -90 }}
+								animate={{ rotate: 0 }}
+								exit={{ rotate: 90 }}
+								transition={{ duration: 0.2 }}
+							>
+								✕
+							</motion.span>
+						) : (
+							<motion.span
+								key="trade"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+							>
+								Trade
+							</motion.span>
+						)}
+					</AnimatePresence>
 				</motion.button>
 
 				<AnimatePresence>
@@ -65,20 +97,20 @@ const TradeButton: React.FC = () => {
 							transition={{ duration: 0.25 }}
 						>
 							<motion.button
-								className='px-20 py-4 bg-black text-white rounded-full text-lg font-semibold flex items-center justify-center gap-2'
+								className='px-20 py-4 bg-black text-white rounded-full text-lg font-semibold'
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}
+								onClick={handleBearishBullishClick}
 							>
-								<div>Bearish</div>
-								<Image src={ChartArrow} alt='Bearish' width={20} height={20} className='transform rotate-180 scale-x-[-1]' />
+								Bearish
 							</motion.button>
 							<motion.button
-								className='px-20 py-4 bg-black text-white rounded-full text-lg font-semibold flex items-center justify-center gap-2'
+								className='px-20 py-4 bg-black text-white rounded-full text-lg font-semibold'
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}
+								onClick={handleBearishBullishClick}
 							>
-								<div>Bullish</div>
-								<Image src={ChartArrow} alt='Bullish' width={20} height={20} />
+								Bullish
 							</motion.button>
 						</motion.div>
 					)}

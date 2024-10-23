@@ -56,9 +56,7 @@ function PerpHeader({ simplePerpData, delta, marketUpdateData }: any) {
         )}
       </div>
 
-      <div className='mt-4 text-xs text-gray-500'>
-        Contract Address: {simplePerpData?.perpSmartContractAddress}
-      </div>
+
     </>
   )
 }

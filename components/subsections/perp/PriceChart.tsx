@@ -78,7 +78,7 @@ function PriceChart({ chartData }: { chartData: any }) {
 	if (!chartData) return null
 
 	return (
-		<div className='mt-8 h-[200px] w-screen -ml-4'>
+		<div className='mt-8 h-[200px] w-screen -ml-6'>
 			<Line options={chartOptions} data={chartData} />
 		</div>
 	)

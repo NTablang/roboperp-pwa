@@ -1,16 +1,16 @@
 import Page from '@/components/page'
 import Section from '@/components/section'
 import InDepthPerpSection from '@/components/subsections/perp/page'
-import SimplePerpDetails from '@/components/subsections/perp/SimplePerpDetails'
+import TradeButton from '@/components/subsections/perp/TradeButton'
 
 const Index = () => (
 	<Page>
 		<Section>
-			<InDepthPerpSection  address={"0x729f4b99E3ADd91d450962ee4F49623382c9A3A0"}/>
-			<div className='fixed bottom-0 left-0 w-screen  bg-white flex items-center justify-center py-6 '>
-				<div className='trade-button flex justify-center items-center px-36 py-4 text-white font-[600] text-lg '>
-					<div>Trade</div>
-				</div>
+			<InDepthPerpSection
+				address={'0x729f4b99E3ADd91d450962ee4F49623382c9A3A0'}
+			/>
+			<div className='fixed bottom-0 left-0 w-screen bg-white flex items-center justify-center py-6'>
+				<TradeButton />
 			</div>
 		</Section>
 	</Page>

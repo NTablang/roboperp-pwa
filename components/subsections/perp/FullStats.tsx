@@ -74,6 +74,9 @@ function FullStats({ data, openInterest }: FullStatsProps) {
 					label="Net Open Interest"
 					value={data.netOpenInterest}
 				/>
+				<div className='flex justify-between py-2 border-b border-black text-xs'>
+					SC: <strong>{data.perpSmartContractAddress}</strong>
+				</div>
 			</div>
 		</div>
 	)
@@ -88,7 +91,7 @@ interface StatRowProps {
 function StatRow({ label, value, valueClassName = '' }: StatRowProps) {
 	return (
 		<div className='flex justify-between py-2 border-b border-black'>
-			<div className='font-[400] text-normal-black text-opacity-[75%] '>{label}</div>
+			<div className='font-[400] text-normal-black text-opacity-[75%] whitespace-nowrap'>{label}</div>
 			<div className={`text-right font-[600] text-normal-black  ${valueClassName}`}>
 				{value}
 			</div>

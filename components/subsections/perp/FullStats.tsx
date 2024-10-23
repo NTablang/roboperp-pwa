@@ -88,7 +88,7 @@ interface StatRowProps {
 	valueClassName?: string
 }
 
-function StatRow({ label, value, valueClassName = '' }: StatRowProps) {
+export function StatRow({ label, value, valueClassName = '' }: StatRowProps) {
 	return (
 		<div className='flex justify-between py-2 border-b border-black'>
 			<div className='font-[400] text-normal-black text-opacity-[75%] whitespace-nowrap'>{label}</div>

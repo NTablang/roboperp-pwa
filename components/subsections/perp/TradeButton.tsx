@@ -3,8 +3,10 @@ import clsx from 'clsx'
 import styles from './TradeButton.module.css'
 import ChartArrow from '@/public/chart-arrow.svg'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
-const TradeButton: React.FC = () => {
+const TradeButton: React.FC<{ address: string }> = ({ address }) => {
+	const router = useRouter()
 	const [isBlurred, setIsBlurred] = useState(false)
 	const [showButtons, setShowButtons] = useState(false)
 	const [isClosing, setIsClosing] = useState(false)
@@ -34,9 +36,12 @@ const TradeButton: React.FC = () => {
 		}, 250) // Match this with the animation duration
 	}, []);
 
-	const handleBearishBullishClick = useCallback(() => {
+	const handleBearishBullishClick = useCallback((direction: 'bearish' | 'bullish') => {
 		vibrate([50, 20, 50]);
-	}, [vibrate]);
+
+		// add bearish/bullish as part of param on router
+		router.push(`/trade/${address}?direction=${direction}`);
+	}, [vibrate, router, address]);
 
 	return (
 		<>
@@ -67,14 +72,14 @@ const TradeButton: React.FC = () => {
 					)}>
 						<button
 							className={styles.actionButton}
-							onClick={handleBearishBullishClick}
+							onClick={() => handleBearishBullishClick('bearish')}
 						>
 							<div>Bearish</div>
 							<Image src={ChartArrow} alt="Bearish" className="transform rotate-[180deg] scale-x-[-1]"/>
 						</button>
 						<button
 							className={styles.actionButton}
-							onClick={handleBearishBullishClick}
+							onClick={() => handleBearishBullishClick('bullish')}
 						>
 							<div>Bullish</div>
 							<Image src={ChartArrow} alt="Bullish" />

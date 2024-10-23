@@ -55,7 +55,7 @@ function TradePage() {
 									/>
 								</svg>
 							</button>
-							<div className='flex items-center justify-center w-full '>
+							<div className='flex items-center justify-center w-full  fixed top-5 left-0 right-0'>
 								<div className='flex items-center gap-2'>
 									<div className='font-[600] tracking-[-0.02em] text-black'>
 										{direction === 'bearish' ? 'Bearish' : 'Bullish'}
